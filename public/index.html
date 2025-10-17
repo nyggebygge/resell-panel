@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reseller Panel - Dashboard</title>
+    <!-- Core Styles -->
+    <link rel="stylesheet" href="css/core.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/credits.css">
+    <link rel="stylesheet" href="css/store.css">
+    <link rel="stylesheet" href="css/transactions.css">
+    <link rel="stylesheet" href="css/effects.css">
+    <link rel="stylesheet" href="css/modal.css">
+    <link rel="stylesheet" href="css/my-keys.css">
+    <link rel="stylesheet" href="css/batch-manager.css">
+    <link rel="stylesheet" href="css/stripe.css">
+    
+    <!-- Stripe.js -->
+    <script src="https://js.stripe.com/v3/"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="background-animation">
+        <canvas id="background-canvas"></canvas>
+        <div class="gradient-overlay"></div>
+    </div>
+
+    <div class="container">
+        <!-- Sidebar -->
+        <nav class="sidebar glass-effect">
+            <div class="sidebar-header">
+                <div class="logo pulse-glow">
+                    <i class="fas fa-cube rotating-icon"></i>
+                    <span>RESELLER</span>
+                    <small>PANEL</small>
+                </div>
+            </div>
+            
+            <div class="nav-section">
+                <h4>GENERAL</h4>
+                <ul class="nav-menu">
+                    <li class="nav-item active">
+                        <a href="#dashboard" class="nav-link">
+                            <i class="fas fa-home"></i>
+                            <span>Dashboard</span>
+                            <div class="nav-ripple"></div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="nav-section">
+                <h4>FEATURES</h4>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#store" class="nav-link">
+                            <i class="fas fa-store"></i>
+                            <span>Store</span>
+                            <div class="nav-ripple"></div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#credits" class="nav-link">
+                            <i class="fas fa-coins"></i>
+                            <span>Credits</span>
+                            <div class="nav-ripple"></div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#transactions" class="nav-link">
+                            <i class="fas fa-exchange-alt"></i>
+                            <span>Transactions</span>
+                            <div class="nav-ripple"></div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#my-keys" class="nav-link">
+                            <i class="fas fa-key"></i>
+                            <span>My Keys</span>
+                            <div class="nav-ripple"></div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="nav-section">
+                <h4>ACCOUNT</h4>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#settings" class="nav-link">
+                            <i class="fas fa-cog"></i>
+                            <span>Settings</span>
+                            <div class="nav-ripple"></div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#profile" class="nav-link">
+                            <i class="fas fa-user"></i>
+                            <span>Profile</span>
+                            <div class="nav-ripple"></div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="nav-section" id="admin-section" style="display: none;">
+                <h4>ADMIN</h4>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="admin.html" class="nav-link admin-link">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Admin Dashboard</span>
+                            <div class="nav-ripple"></div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="header glass-effect">
+                <div class="breadcrumb">
+                    <span>Dashboard</span> / <span class="current glow-text">General</span>
+                </div>
+                <div class="user-info">
+                    <button class="theme-toggle magnetic-btn" id="theme-toggle" title="Toggle Theme">
+                        <i class="fas fa-moon"></i>
+                        <div class="btn-ripple"></div>
+                    </button>
+                    <span class="balance animated-balance">Balance: $<span id="user-balance">0.00</span></span>
+                    <div class="user-avatar pulse-avatar">
+                        <i class="fas fa-user-circle"></i>
+                        <div class="avatar-ring"></div>
+                    </div>
+                    <button class="admin-btn magnetic-btn" id="admin-btn" title="Admin Dashboard" style="display: none;">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Admin</span>
+                        <div class="btn-ripple"></div>
+                    </button>
+                    <button class="logout-btn magnetic-btn" id="logout-btn" title="Logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <div class="btn-ripple"></div>
+                    </button>
+                </div>
+            </header>
+
+            <div class="content">
+                <!-- Dashboard Section -->
+                <section id="dashboard-section" class="section active fade-in">
+                    <h1 class="section-title">Dashboard</h1>
+                    
+                    <!-- Welcome Message -->
+                    <div class="welcome-section glass-card">
+                        <div class="welcome-content">
+                            <h2 class="welcome-title">Welcome, <span id="username">User</span>!</h2>
+                            <p class="welcome-subtitle">Manage your account and generate keys</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Key Generator -->
+                    <div class="key-generator-section glass-card">
+                        <h3 class="generator-title">Key Generator</h3>
+                        <div class="generator-content">
+                            <div class="keys-display">
+                                <div class="keys-info">
+                                    <span class="keys-label">Keys generated</span>
+                                    <span class="keys-count" id="keys-count">0</span>
+                                    <i class="fas fa-search"></i>
+                                </div>
+                                <button class="generate-btn magnetic-btn" onclick="showKeyOptions()">
+                                    <i class="fas fa-key"></i>
+                                    <span>Generate Keys</span>
+                                    <div class="btn-ripple"></div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card glass-card hover-lift" data-tilt>
+                            <div class="stat-icon floating-icon">
+                                <i class="fas fa-wallet"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 class="counter-animation">$<span id="total-balance" data-target="0">0.00</span></h3>
+                                <p>Total Balance</p>
+                            </div>
+                            <div class="card-glow"></div>
+                        </div>
+                        
+                        <div class="stat-card glass-card hover-lift" data-tilt>
+                            <div class="stat-icon floating-icon">
+                                <i class="fas fa-coins"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 class="counter-animation"><span id="total-credits" data-target="0">0</span></h3>
+                                <p>Available Credits</p>
+                            </div>
+                            <div class="card-glow"></div>
+                        </div>
+                        
+                        <div class="stat-card glass-card hover-lift" data-tilt>
+                            <div class="stat-icon floating-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 class="counter-animation"><span id="total-deposits" data-target="0">0</span></h3>
+                                <p>Total Deposits</p>
+                            </div>
+                            <div class="card-glow"></div>
+                        </div>
+                        
+                        <div class="stat-card glass-card hover-lift" data-tilt>
+                            <div class="stat-icon floating-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3><span id="last-deposit">Never</span></h3>
+                                <p>Last Deposit</p>
+                            </div>
+                            <div class="card-glow"></div>
+                        </div>
+                    </div>
+
+                    <div class="quick-actions">
+                        <h2 class="section-subtitle">Quick Actions</h2>
+                        <div class="action-buttons">
+                            <button class="action-btn secondary magnetic-btn" onclick="showSection('credits-section')">
+                                <i class="fas fa-eye"></i>
+                                <span>View Credits</span>
+                                <div class="btn-ripple"></div>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- Credits Section -->
+                <section id="credits-section" class="section fade-in">
+                    <h1 class="section-title">Your Credits</h1>
+                    
+                    <div class="credits-overview">
+                        <div class="credits-card glass-card">
+                            <div class="credits-header">
+                                <h2>Available Credits</h2>
+                                <div class="credits-amount">
+                                    <span id="credits-display" class="counter-animation" data-target="0">0</span>
+                                    <small>Credits</small>
+                                </div>
+                            </div>
+                            <div class="credits-value">
+                                <span>Equivalent to: $<span id="credits-value">0.00</span></span>
+                            </div>
+                            <div class="credits-visual">
+                                <div class="credits-bar">
+                                    <div class="credits-fill"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Transactions Section -->
+                <section id="transactions-section" class="section fade-in">
+                    <h1 class="section-title">Transaction History</h1>
+                    
+                    <div class="transactions-container">
+                        <div class="transactions-header">
+                            <h2>Recent Transactions</h2>
+                            <div class="transaction-controls">
+                                <div class="filter-controls">
+                                    <input type="date" id="date-from" class="filter-input" title="From Date">
+                                    <input type="date" id="date-to" class="filter-input" title="To Date">
+                                    <input type="number" id="amount-min" class="filter-input" placeholder="Min Amount" step="0.01">
+                                    <input type="number" id="amount-max" class="filter-input" placeholder="Max Amount" step="0.01">
+                                    <button class="filter-btn magnetic-btn" onclick="applyFilters()">
+                                        <i class="fas fa-filter"></i>
+                                        <span>Filter</span>
+                                        <div class="btn-ripple"></div>
+                                    </button>
+                                    <button class="clear-filters-btn magnetic-btn" onclick="clearFilters()">
+                                        <i class="fas fa-times"></i>
+                                        <div class="btn-ripple"></div>
+                                    </button>
+                                </div>
+                                <div class="action-controls">
+                                    <button class="export-btn magnetic-btn" onclick="exportTransactions()">
+                                        <i class="fas fa-download"></i>
+                                        <span>Export CSV</span>
+                                        <div class="btn-ripple"></div>
+                                    </button>
+                                    <button class="refresh-btn magnetic-btn" onclick="loadTransactions()">
+                                        <i class="fas fa-sync-alt spinning-refresh"></i>
+                                        <span>Refresh</span>
+                                        <div class="btn-ripple"></div>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="transactions-list glass-card" id="transactions-list">
+                            <div class="no-transactions">
+                                <i class="fas fa-receipt floating-icon"></i>
+                                <p>No transactions found</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Store Section -->
+                <section id="store-section" class="section fade-in">
+                    <h1 class="section-title">Store</h1>
+                    
+                    <div class="store-container">
+                        <div class="store-header">
+                            <h2>Available Products</h2>
+                            <div class="store-controls">
+                                <div class="search-controls">
+                                    <input type="text" id="store-search" class="filter-input" placeholder="Search products..." style="min-width: 200px;">
+                                    <button class="filter-btn magnetic-btn" onclick="searchProducts()">
+                                        <i class="fas fa-search"></i>
+                                        <span>Search</span>
+                                        <div class="btn-ripple"></div>
+                                    </button>
+                                </div>
+                                <div class="category-controls">
+                                    <select id="category-filter" class="filter-input">
+                                        <option value="">All Categories</option>
+                                        <option value="software">Software</option>
+                                        <option value="gaming">Gaming</option>
+                                        <option value="digital">Digital Goods</option>
+                                        <option value="services">Services</option>
+                                    </select>
+                                    <button class="filter-btn magnetic-btn" onclick="filterByCategory()">
+                                        <i class="fas fa-filter"></i>
+                                        <span>Filter</span>
+                                        <div class="btn-ripple"></div>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="products-grid" id="products-grid">
+                            <!-- Products will be dynamically loaded here -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- My Keys Section -->
+                <section id="my-keys-section" class="section fade-in">
+                    <div class="batch-manager-dashboard">
+                        <!-- Batch Manager Header -->
+                        <div class="batch-header">
+                            <div class="header-main">
+                                <div class="title-section">
+                                    <h2 class="main-title">
+                                        <i class="fas fa-layer-group"></i>
+                                        Key Batch Manager
+                                    </h2>
+                                    <p class="subtitle">Manage your key batches like documents</p>
+                                </div>
+                                <div class="header-actions">
+                                    <button class="action-btn primary" onclick="showKeyOptions()">
+                                        <i class="fas fa-plus"></i>
+                                        <span>Generate New Batch</span>
+                                    </button>
+                                    <button class="action-btn secondary" onclick="batchManager.refreshBatches()">
+                                        <i class="fas fa-sync"></i>
+                                        <span>Refresh</span>
+                                    </button>
+                                    <button class="action-btn secondary" onclick="batchManager.exportAllBatches()">
+                                        <i class="fas fa-download"></i>
+                                        <span>Export All</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Batch List -->
+                        <div class="batch-list spread" id="batch-list">
+                            <!-- Batches will be populated here -->
+                        </div>
+                        
+                        <div class="stack-info" id="stack-info">
+                            <!-- Stack info will be shown here -->
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Key Options Modal -->
+    <div id="key-options-modal" class="modal-overlay">
+        <div class="modal-content glass-card">
+            <div class="modal-header">
+                <h3 class="modal-title">Generate Keys</h3>
+                <button class="modal-close" onclick="closeKeyOptionsModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="key-options">
+                    <h4>Select Key Type</h4>
+                    <div class="key-type-options">
+                        <button class="key-type-btn magnetic-btn btn-enhanced hover-glow key-type-day" onclick="selectKeyType('day')">
+                            <i class="fas fa-calendar-day"></i>
+                            <span>Day</span>
+                            <div class="btn-ripple"></div>
+                        </button>
+                        <button class="key-type-btn magnetic-btn btn-enhanced hover-glow key-type-week" onclick="selectKeyType('week')">
+                            <i class="fas fa-calendar-week"></i>
+                            <span>Week</span>
+                            <div class="btn-ripple"></div>
+                        </button>
+                        <button class="key-type-btn magnetic-btn btn-enhanced hover-glow key-type-month" onclick="selectKeyType('month')">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>Month</span>
+                            <div class="btn-ripple"></div>
+                        </button>
+                        <button class="key-type-btn magnetic-btn btn-enhanced hover-glow key-type-lifetime" onclick="selectKeyType('lifetime')">
+                            <i class="fas fa-infinity"></i>
+                            <span>Lifetime</span>
+                            <div class="btn-ripple"></div>
+                        </button>
+                    </div>
+                    
+                    <div class="key-quantity">
+                        <h4>Number of Keys</h4>
+                        <div class="quantity-input">
+                            <input type="number" id="key-quantity" min="1" max="100" value="1" class="quantity-field focus-enhanced transition-smooth">
+                            <div class="quantity-controls">
+                                <button class="quantity-btn btn-enhanced hover-scale" onclick="changeQuantity(-1)">-</button>
+                                <button class="quantity-btn btn-enhanced hover-scale" onclick="changeQuantity(1)">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button class="cancel-btn magnetic-btn btn-enhanced hover-glow" onclick="closeKeyOptionsModal()">
+                        <i class="fas fa-times"></i>
+                        <span>Cancel</span>
+                        <div class="btn-ripple"></div>
+                    </button>
+                    <button class="confirm-btn magnetic-btn btn-enhanced hover-glow" id="confirm-generate" onclick="confirmKeyGeneration()" disabled>
+                        <i class="fas fa-key"></i>
+                        <span>Generate Keys</span>
+                        <div class="btn-ripple"></div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Purchase Modal -->
+    <div id="purchase-modal" class="modal-overlay">
+        <div class="modal-content glass-card">
+            <div class="modal-header">
+                <h3 class="modal-title">Complete Purchase</h3>
+                <button class="modal-close" onclick="closePurchaseModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="product-summary">
+                    <div class="product-info">
+                        <h4 id="modal-product-name">Product Name</h4>
+                        <p id="modal-product-price">$0.00</p>
+                    </div>
+                </div>
+                <div class="payment-options">
+                    <h4>Choose Payment Method</h4>
+                    <div class="payment-methods">
+                        <button class="payment-option magnetic-btn" onclick="selectPaymentMethod('stripe')">
+                            <i class="fas fa-credit-card"></i>
+                            <span>Credit/Debit Card (Stripe)</span>
+                            <div class="btn-ripple"></div>
+                        </button>
+                        <button class="payment-option magnetic-btn" onclick="selectPaymentMethod('crypto')">
+                            <i class="fab fa-bitcoin"></i>
+                            <span>Cryptocurrency</span>
+                            <div class="btn-ripple"></div>
+                        </button>
+                    </div>
+                    
+                    <!-- Stripe Payment Element Container -->
+                    <div id="stripe-payment-container" class="stripe-payment-container" style="display: none;">
+                        <div id="stripe-payment-element">
+                            <!-- Stripe Elements will be mounted here -->
+                        </div>
+                        <div id="card-errors" class="card-errors" role="alert"></div>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button class="cancel-btn magnetic-btn" onclick="closePurchaseModal()">
+                        <i class="fas fa-times"></i>
+                        <span>Cancel</span>
+                        <div class="btn-ripple"></div>
+                    </button>
+                    <button class="confirm-btn magnetic-btn" id="confirm-purchase" onclick="confirmPurchase()" disabled>
+                        <i class="fas fa-check"></i>
+                        <span>Confirm Purchase</span>
+                        <div class="btn-ripple"></div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Modules -->
+    <script src="js/config.js"></script>
+    <script src="js/logger.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/core.js"></script>
+    <!-- Simple Key Viewer Modal -->
+    <div id="key-document-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content simple-key-modal">
+            <div class="modal-header">
+                <h3 id="document-title">Batch Keys</h3>
+                <button class="modal-close" onclick="keyDocument.close()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="key-actions">
+                    <button class="action-btn primary" onclick="keyDocument.copyAll()">
+                        <i class="fas fa-copy"></i>
+                        Copy All Keys
+                    </button>
+                    <button class="action-btn secondary" onclick="keyDocument.export()">
+                        <i class="fas fa-download"></i>
+                        Export
+                    </button>
+                </div>
+                
+                <div class="keys-container" id="document-body">
+                    <!-- Keys will be displayed here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/navigation.js"></script>
+    <script src="js/effects.js"></script>
+    <script src="js/transactions.js"></script>
+    <script src="js/stripe-payments.js"></script>
+    <script src="js/store.js"></script>
+    <script src="js/batch-manager.js"></script>
+    <script src="js/my-keys.js"></script>
+    <script src="js/demo.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

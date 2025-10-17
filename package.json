@@ -1,0 +1,31 @@
+{
+  "name": "resell-panel",
+  "version": "1.0.0",
+  "description": "Resell Panel with Stripe Integration",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "build": "echo 'No build step needed'",
+    "railway:setup": "node deploy-railway.js",
+    "railway:deploy": "npm run railway:setup && npm start"
+  },
+  "engines": {
+    "node": "18.x"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "mysql2": "^3.6.0",
+    "sequelize": "^6.32.1",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "stripe": "^19.1.0",
+    "dotenv": "^16.3.1",
+    "express-rate-limit": "^7.1.5",
+    "express-validator": "^7.2.1",
+    "moment": "^2.29.4",
+    "uuid": "^9.0.1",
+    "validator": "^13.15.15"
+  }
+}

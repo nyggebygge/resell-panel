@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Revenue Analytics - Admin Dashboard</title>
+    
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/core.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="css/revenue.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <button class="sidebar-toggle" id="sidebar-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="breadcrumb">
+                <span class="breadcrumb-item">Admin</span>
+                <i class="fas fa-chevron-right"></i>
+                <span class="current">Revenue Analytics</span>
+            </div>
+        </div>
+        <div class="header-right">
+            <button class="btn btn-secondary" onclick="window.location.href='admin.html'">
+                <i class="fas fa-arrow-left"></i>
+                Back to Admin
+            </button>
+        </div>
+    </header>
+
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                <span>Revenue Analytics</span>
+            </div>
+        </div>
+        
+        <div class="sidebar-content">
+            <div class="nav-section">
+                <h4>ANALYTICS</h4>
+                <ul class="nav-menu">
+                    <li class="nav-item active">
+                        <a href="#overview" class="nav-link">
+                            <i class="fas fa-chart-pie"></i>
+                            <span>Overview</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#revenue" class="nav-link">
+                            <i class="fas fa-dollar-sign"></i>
+                            <span>Revenue</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#transactions" class="nav-link">
+                            <i class="fas fa-exchange-alt"></i>
+                            <span>Transactions</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#users" class="nav-link">
+                            <i class="fas fa-users"></i>
+                            <span>User Analytics</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#keys" class="nav-link">
+                            <i class="fas fa-key"></i>
+                            <span>Key Analytics</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Overview Section -->
+        <section id="overview-section" class="section active">
+            <div class="section-header">
+                <h1>Revenue Overview</h1>
+                <div class="date-range-picker">
+                    <select id="timeRange">
+                        <option value="7">Last 7 Days</option>
+                        <option value="30" selected>Last 30 Days</option>
+                        <option value="90">Last 90 Days</option>
+                        <option value="365">Last Year</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Key Metrics -->
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-icon">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="metric-content">
+                        <h3 id="totalRevenue">$0</h3>
+                        <p>Total Revenue</p>
+                        <span class="metric-change positive" id="revenueChange">+0%</span>
+                    </div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div class="metric-content">
+                        <h3 id="totalTransactions">0</h3>
+                        <p>Total Transactions</p>
+                        <span class="metric-change positive" id="transactionChange">+0%</span>
+                    </div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="metric-content">
+                        <h3 id="activeUsers">0</h3>
+                        <p>Active Users</p>
+                        <span class="metric-change positive" id="userChange">+0%</span>
+                    </div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-icon">
+                        <i class="fas fa-key"></i>
+                    </div>
+                    <div class="metric-content">
+                        <h3 id="keysGenerated">0</h3>
+                        <p>Keys Generated</p>
+                        <span class="metric-change positive" id="keyChange">+0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Row -->
+            <div class="charts-row">
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3>Revenue Trend</h3>
+                        <div class="chart-controls">
+                            <button class="chart-btn active" data-chart="line">Line</button>
+                            <button class="chart-btn" data-chart="bar">Bar</button>
+                        </div>
+                    </div>
+                    <canvas id="revenueChart"></canvas>
+                </div>
+                
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3>Revenue by Source</h3>
+                    </div>
+                    <canvas id="revenueSourceChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Revenue Section -->
+        <section id="revenue-section" class="section">
+            <div class="section-header">
+                <h1>Revenue Analytics</h1>
+                <div class="section-controls">
+                    <button class="btn btn-primary" id="exportRevenue">
+                        <i class="fas fa-download"></i>
+                        Export Data
+                    </button>
+                </div>
+            </div>
+
+            <div class="analytics-grid">
+                <div class="analytics-card">
+                    <h3>Daily Revenue</h3>
+                    <canvas id="dailyRevenueChart"></canvas>
+                </div>
+                
+                <div class="analytics-card">
+                    <h3>Monthly Revenue</h3>
+                    <canvas id="monthlyRevenueChart"></canvas>
+                </div>
+                
+                <div class="analytics-card">
+                    <h3>Revenue Distribution</h3>
+                    <canvas id="revenueDistributionChart"></canvas>
+                </div>
+                
+                <div class="analytics-card">
+                    <h3>Top Revenue Sources</h3>
+                    <div id="topRevenueSources"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Transactions Section -->
+        <section id="transactions-section" class="section">
+            <div class="section-header">
+                <h1>Transaction Analytics</h1>
+            </div>
+
+            <div class="analytics-grid">
+                <div class="analytics-card">
+                    <h3>Transaction Volume</h3>
+                    <canvas id="transactionVolumeChart"></canvas>
+                </div>
+                
+                <div class="analytics-card">
+                    <h3>Transaction Types</h3>
+                    <canvas id="transactionTypesChart"></canvas>
+                </div>
+                
+                <div class="analytics-card">
+                    <h3>Average Transaction Value</h3>
+                    <canvas id="avgTransactionChart"></canvas>
+                </div>
+                
+                <div class="analytics-card">
+                    <h3>Transaction Success Rate</h3>
+                    <div class="success-rate">
+                        <div class="success-rate-circle">
+                            <span id="successRate">0%</span>
+                        </div>
+                        <p>Overall Success Rate</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Users Section -->
+        <section id="users-section" class="section">
+            <div class="section-header">
+                <h1>User Analytics</h1>
+            </div>
+
+            <div class="analytics-grid">
+                <div class="analytics-card">
+                    <h3>User Growth</h3>
+                    <canvas id="userGrowthChart"></canvas>
+                </div>
+                
+                <div class="analytics-card">
+                    <h3>User Activity</h3>
+                    <canvas id="userActivityChart"></canvas>
+                </div>
+                
+                <div class="analytics-card">
+                    <h3>User Revenue Distribution</h3>
+                    <canvas id="userRevenueChart"></canvas>
+                </div>
+                
+                <div class="analytics-card">
+                    <h3>Top Users by Revenue</h3>
+                    <div id="topUsers"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Keys Section -->
+        <section id="keys-section" class="section">
+            <div class="section-header">
+                <h1>Key Analytics</h1>
+            </div>
+
+            <div class="analytics-grid">
+                <div class="analytics-card">
+                    <h3>Key Generation Trends</h3>
+                    <canvas id="keyGenerationChart"></canvas>
+                </div>
+                
+                <div class="analytics-card">
+                    <h3>Key Types Distribution</h3>
+                    <canvas id="keyTypesChart"></canvas>
+                </div>
+                
+                <div class="analytics-card">
+                    <h3>Key Usage Analytics</h3>
+                    <canvas id="keyUsageChart"></canvas>
+                </div>
+                
+                <div class="analytics-card">
+                    <h3>Key Performance Metrics</h3>
+                    <div id="keyMetrics"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/admin-auth.js"></script>
+    <script src="js/simple-revenue-analytics.js"></script>
+    
+    <!-- Simple analytics initialization is handled in simple-revenue-analytics.js -->
+</body>
+</html>

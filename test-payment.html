@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #ccc; }
+        button { padding: 10px 20px; margin: 10px; background: #007bff; color: white; border: none; cursor: pointer; }
+        .result { margin: 10px 0; padding: 10px; background: #f8f9fa; }
+    </style>
+</head>
+<body>
+    <h1>Payment System Test</h1>
+    
+    <div class="test-section">
+        <h3>1. Test Authentication</h3>
+        <button onclick="testAuth()">Check Auth Status</button>
+        <div id="auth-result" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>2. Test API Connection</h3>
+        <button onclick="testAPI()">Test API Connection</button>
+        <div id="api-result" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>3. Test Payment Intent Creation</h3>
+        <button onclick="testPaymentIntent()">Create Test Payment Intent</button>
+        <div id="payment-result" class="result"></div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/stripe-payments.js"></script>
+    <script>
+        async function testAuth() {
+            const result = document.getElementById('auth-result');
+            const token = localStorage.getItem('authToken');
+            result.innerHTML = `
+                <strong>Auth Token:</strong> ${token ? 'Present' : 'Missing'}<br>
+                <strong>Token Length:</strong> ${token ? token.length : 0}<br>
+                <strong>Auth Manager:</strong> ${window.authManager ? 'Available' : 'Not Available'}<br>
+                <strong>Is Logged In:</strong> ${window.authManager ? window.authManager.getIsLoggedIn() : 'N/A'}
+            `;
+        }
+        
+        async function testAPI() {
+            const result = document.getElementById('api-result');
+            try {
+                const response = await fetch('/api/test');
+                const data = await response.json();
+                result.innerHTML = `<strong>API Status:</strong> ${response.status}<br><strong>Response:</strong> ${JSON.stringify(data)}`;
+            } catch (error) {
+                result.innerHTML = `<strong>API Error:</strong> ${error.message}`;
+            }
+        }
+        
+        async function testPaymentIntent() {
+            const result = document.getElementById('payment-result');
+            try {
+                const response = await fetch('/api/payments/create-payment-intent', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    },
+                    body: JSON.stringify({
+                        amount: 100,
+                        productId: 1,
+                        productName: 'Test Product'
+                    })
+                });
+                
+                const data = await response.json();
+                result.innerHTML = `
+                    <strong>Status:</strong> ${response.status}<br>
+                    <strong>Response:</strong> ${JSON.stringify(data, null, 2)}
+                `;
+            } catch (error) {
+                result.innerHTML = `<strong>Payment Error:</strong> ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>

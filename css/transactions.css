@@ -1,0 +1,237 @@
+/* Transactions Section Styles */
+.transactions-container {
+    max-width: 1000px;
+}
+
+.transactions-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.transactions-header h2 {
+    color: #ffffff;
+    font-size: 20px;
+}
+
+.refresh-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: transparent;
+    color: #00d4ff;
+    border: 2px solid #00d4ff;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.spinning-refresh {
+    transition: transform 0.3s ease;
+}
+
+.refresh-btn:hover .spinning-refresh {
+    transform: rotate(180deg);
+}
+
+.refresh-btn:hover {
+    background: rgba(0, 212, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+.transactions-list {
+    border-radius: 16px;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.no-transactions {
+    text-align: center;
+    color: #8892b0;
+}
+
+.no-transactions i {
+    font-size: 48px;
+    margin-bottom: 15px;
+    opacity: 0.5;
+}
+
+.transaction-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.transaction-item:hover {
+    background: rgba(0, 212, 255, 0.05);
+    transform: translateX(5px);
+}
+
+.transaction-item:last-child {
+    border-bottom: none;
+}
+
+.transaction-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.transaction-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(45deg, #00d4ff, #0099cc);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+}
+
+.transaction-details h4 {
+    color: #ffffff;
+    margin-bottom: 5px;
+}
+
+.transaction-details p {
+    color: #8892b0;
+    font-size: 14px;
+}
+
+.transaction-amount {
+    color: #00d4ff;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+/* Transaction Controls */
+.transaction-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.filter-controls {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.action-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.filter-input {
+    padding: 8px 12px;
+    background: rgba(26, 31, 46, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: #ffffff;
+    font-size: 14px;
+    min-width: 120px;
+    transition: all 0.3s ease;
+}
+
+.filter-input:focus {
+    border-color: #00d4ff;
+    box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.1);
+    outline: none;
+}
+
+.filter-input::placeholder {
+    color: #8892b0;
+}
+
+.filter-btn, .clear-filters-btn, .export-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.filter-btn {
+    background: linear-gradient(45deg, #00d4ff, #0099cc);
+    color: #ffffff;
+}
+
+.filter-btn:hover {
+    background: linear-gradient(45deg, #0099cc, #007399);
+    transform: translateY(-2px);
+}
+
+.clear-filters-btn {
+    background: transparent;
+    color: #ef4444;
+    border: 1px solid #ef4444;
+    padding: 8px 12px;
+}
+
+.clear-filters-btn:hover {
+    background: rgba(239, 68, 68, 0.1);
+    transform: translateY(-2px);
+}
+
+.export-btn {
+    background: linear-gradient(45deg, #22c55e, #16a34a);
+    color: #ffffff;
+}
+
+.export-btn:hover {
+    background: linear-gradient(45deg, #16a34a, #15803d);
+    transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .transaction-controls {
+        gap: 10px;
+    }
+    
+    .filter-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .filter-input {
+        min-width: auto;
+        width: 100%;
+    }
+    
+    .action-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .filter-btn, .clear-filters-btn, .export-btn, .refresh-btn {
+        justify-content: center;
+        width: 100%;
+    }
+    
+    .transactions-header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: stretch;
+    }
+}

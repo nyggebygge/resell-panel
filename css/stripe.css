@@ -1,0 +1,137 @@
+/* Stripe Payment Styles */
+.stripe-payment-container {
+    margin-top: 20px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.stripe-payment-container #stripe-payment-element {
+    margin-bottom: 15px;
+}
+
+.card-errors {
+    color: #e74c3c;
+    font-size: 14px;
+    margin-top: 10px;
+    padding: 8px 12px;
+    background: rgba(231, 76, 60, 0.1);
+    border-radius: 6px;
+    border: 1px solid rgba(231, 76, 60, 0.2);
+    display: none;
+}
+
+.card-errors:not(:empty) {
+    display: block;
+}
+
+/* Stripe Elements Styling */
+.StripeElement {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: #ffffff;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.StripeElement:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+    outline: none;
+}
+
+.StripeElement--invalid {
+    border-color: #e74c3c;
+}
+
+.StripeElement--complete {
+    border-color: #27ae60;
+}
+
+/* Payment method selection styles */
+.payment-option.selected {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    border-color: #6366f1;
+    transform: scale(1.02);
+}
+
+.payment-option.selected .btn-ripple {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Loading states */
+.payment-processing {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.payment-processing .payment-option {
+    cursor: not-allowed;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .stripe-payment-container {
+        padding: 15px;
+        margin-top: 15px;
+    }
+    
+    .StripeElement {
+        padding: 10px 12px;
+        font-size: 14px;
+    }
+}
+
+/* Dark theme adjustments */
+.theme-dark .StripeElement {
+    background: rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+}
+
+.theme-dark .StripeElement:focus {
+    border-color: #6366f1;
+    background: rgba(0, 0, 0, 0.4);
+}
+
+/* Animation for payment container */
+.stripe-payment-container {
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Success state */
+.payment-success {
+    background: rgba(39, 174, 96, 0.1);
+    border-color: rgba(39, 174, 96, 0.3);
+}
+
+.payment-success .StripeElement {
+    border-color: #27ae60;
+    background: rgba(39, 174, 96, 0.05);
+}
+
+/* Error state */
+.payment-error {
+    background: rgba(231, 76, 60, 0.1);
+    border-color: rgba(231, 76, 60, 0.3);
+}
+
+.payment-error .StripeElement {
+    border-color: #e74c3c;
+    background: rgba(231, 76, 60, 0.05);
+}

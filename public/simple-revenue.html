@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Revenue Analytics</title>
+    
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/core.css">
+    <style>
+        .analytics-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .analytics-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .analytics-header h1 {
+            color: #00d4ff;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .metric-card {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .metric-card h3 {
+            color: #00d4ff;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .metric-card p {
+            color: #94a3b8;
+            margin: 0;
+        }
+        
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .chart-container {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+        
+        .chart-container h3 {
+            color: #ffffff;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+        }
+        
+        .loading {
+            text-align: center;
+            color: #00d4ff;
+            font-size: 1.2rem;
+        }
+        
+        .error {
+            color: #ef4444;
+            text-align: center;
+            padding: 1rem;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        
+        .success {
+            color: #10b981;
+            text-align: center;
+            padding: 1rem;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="bg-shape shape-1"></div>
+        <div class="bg-shape shape-2"></div>
+        <div class="bg-shape shape-3"></div>
+        <div class="bg-shape shape-4"></div>
+    </div>
+
+    <!-- Analytics Container -->
+    <div class="analytics-container">
+        <!-- Header -->
+        <div class="analytics-header">
+            <h1><i class="fas fa-chart-line"></i> Simple Revenue Analytics</h1>
+            <p>Clean, simple analytics dashboard</p>
+        </div>
+
+        <!-- Metrics Overview -->
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <h3 id="total-revenue">$0</h3>
+                <p>Total Revenue</p>
+            </div>
+            <div class="metric-card">
+                <h3 id="total-transactions">0</h3>
+                <p>Total Transactions</p>
+            </div>
+            <div class="metric-card">
+                <h3 id="new-users">0</h3>
+                <p>New Users</p>
+            </div>
+            <div class="metric-card">
+                <h3 id="keys-generated">0</h3>
+                <p>Keys Generated</p>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="charts-grid">
+            <div class="chart-container">
+                <h3>Daily Revenue</h3>
+                <div class="chart-wrapper">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <h3>Transaction Volume</h3>
+                <div class="chart-wrapper">
+                    <canvas id="transactionChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <h3>User Growth</h3>
+                <div class="chart-wrapper">
+                    <canvas id="userChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <h3>Key Generation</h3>
+                <div class="chart-wrapper">
+                    <canvas id="keyChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Messages -->
+        <div id="status-messages"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/admin-auth.js"></script>
+    
+    <script>
+        // Simple Analytics Dashboard
+        class SimpleAnalytics {
+            constructor() {
+                this.charts = {};
+                this.init();
+            }
+
+            init() {
+                console.log('🚀 Initializing Simple Analytics');
+                this.showMessage('Loading analytics data...', 'loading');
+                this.loadData();
+            }
+
+            async loadData() {
+                try {
+                    // Load overview data
+                    const overviewResponse = await window.api.request('/admin/analytics/overview');
+                    this.updateMetrics(overviewResponse.data);
+                    this.showMessage('Overview data loaded successfully!', 'success');
+
+                    // Load chart data
+                    const [revenueData, transactionData, userData, keyData] = await Promise.all([
+                        window.api.request('/admin/analytics/revenue'),
+                        window.api.request('/admin/analytics/transactions'),
+                        window.api.request('/admin/analytics/users'),
+                        window.api.request('/admin/analytics/keys')
+                    ]);
+
+                    // Render charts
+                    this.renderRevenueChart(revenueData.data);
+                    this.renderTransactionChart(transactionData.data);
+                    this.renderUserChart(userData.data);
+                    this.renderKeyChart(keyData.data);
+
+                    this.showMessage('All analytics data loaded successfully!', 'success');
+
+                } catch (error) {
+                    console.error('Error loading analytics:', error);
+                    this.showMessage(`Error loading analytics: ${error.message}`, 'error');
+                }
+            }
+
+            updateMetrics(data) {
+                document.getElementById('total-revenue').textContent = `$${data.totalRevenue.toLocaleString()}`;
+                document.getElementById('total-transactions').textContent = data.totalTransactions.toLocaleString();
+                document.getElementById('new-users').textContent = data.newUsers.toLocaleString();
+                document.getElementById('keys-generated').textContent = data.keysGenerated.toLocaleString();
+            }
+
+            renderRevenueChart(data) {
+                const ctx = document.getElementById('revenueChart');
+                if (!ctx) return;
+
+                const labels = data.dailyRevenue.map(d => d.date);
+                const values = data.dailyRevenue.map(d => d.amount);
+
+                this.charts.revenue = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Daily Revenue',
+                            data: values,
+                            borderColor: '#00d4ff',
+                            backgroundColor: 'rgba(0, 212, 255, 0.2)',
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                                ticks: { color: '#ffffff' }
+                            },
+                            x: {
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                                ticks: { color: '#ffffff' }
+                            }
+                        },
+                        plugins: {
+                            legend: { labels: { color: '#ffffff' } }
+                        }
+                    }
+                });
+            }
+
+            renderTransactionChart(data) {
+                const ctx = document.getElementById('transactionChart');
+                if (!ctx) return;
+
+                const labels = data.dailyTransactions.map(d => d.date);
+                const values = data.dailyTransactions.map(d => d.count);
+
+                this.charts.transaction = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Transactions',
+                            data: values,
+                            backgroundColor: '#8e44ad',
+                            borderColor: '#8e44ad',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                                ticks: { color: '#ffffff' }
+                            },
+                            x: {
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                                ticks: { color: '#ffffff' }
+                            }
+                        },
+                        plugins: {
+                            legend: { labels: { color: '#ffffff' } }
+                        }
+                    }
+                });
+            }
+
+            renderUserChart(data) {
+                const ctx = document.getElementById('userChart');
+                if (!ctx) return;
+
+                const labels = data.userGrowth.map(d => d.date);
+                const values = data.userGrowth.map(d => d.count);
+
+                this.charts.user = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'New Users',
+                            data: values,
+                            borderColor: '#2ecc71',
+                            backgroundColor: 'rgba(46, 204, 113, 0.2)',
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                                ticks: { color: '#ffffff' }
+                            },
+                            x: {
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                                ticks: { color: '#ffffff' }
+                            }
+                        },
+                        plugins: {
+                            legend: { labels: { color: '#ffffff' } }
+                        }
+                    }
+                });
+            }
+
+            renderKeyChart(data) {
+                const ctx = document.getElementById('keyChart');
+                if (!ctx) return;
+
+                const labels = data.keyGenerationTrend.map(d => d.date);
+                const values = data.keyGenerationTrend.map(d => d.count);
+
+                this.charts.key = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Keys Generated',
+                            data: values,
+                            borderColor: '#f39c12',
+                            backgroundColor: 'rgba(243, 156, 18, 0.2)',
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                                ticks: { color: '#ffffff' }
+                            },
+                            x: {
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                                ticks: { color: '#ffffff' }
+                            }
+                        },
+                        plugins: {
+                            legend: { labels: { color: '#ffffff' } }
+                        }
+                    }
+                });
+            }
+
+            showMessage(message, type) {
+                const container = document.getElementById('status-messages');
+                const messageEl = document.createElement('div');
+                messageEl.className = type;
+                messageEl.textContent = message;
+                container.appendChild(messageEl);
+
+                // Remove after 5 seconds
+                setTimeout(() => {
+                    if (messageEl.parentNode) {
+                        messageEl.parentNode.removeChild(messageEl);
+                    }
+                }, 5000);
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check admin access
+            if (!window.adminAuth || !window.adminAuth.checkIsAdmin()) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Initialize analytics
+            window.simpleAnalytics = new SimpleAnalytics();
+        });
+    </script>
+</body>
+</html>
