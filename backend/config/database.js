@@ -35,9 +35,10 @@ const sequelize = new Sequelize(
 const connectDB = async () => {
   try {
     console.log('🔍 Attempting to connect to MySQL...');
-    console.log('🔍 Database:', process.env.DB_NAME || 'resell_panel');
-    console.log('🔍 Host:', process.env.DB_HOST || 'localhost');
-    console.log('🔍 Port:', process.env.DB_PORT || 3306);
+    console.log('🔍 Database:', process.env.DB_NAME || process.env.MYSQL_DATABASE || 'resell_panel');
+    console.log('🔍 Host:', process.env.DB_HOST || process.env.MYSQL_HOST || 'localhost');
+    console.log('🔍 Port:', process.env.DB_PORT || process.env.MYSQL_PORT || 3306);
+    console.log('🔍 User:', process.env.DB_USER || process.env.MYSQL_USER || 'root');
     
     await sequelize.authenticate();
     console.log('✅ MySQL connected successfully');
