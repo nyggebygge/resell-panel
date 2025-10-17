@@ -3,6 +3,7 @@ require('dotenv').config();
 
 // MySQL connection configuration for Railway
 const sequelize = new Sequelize(
+  process.env.MYSQL_URL || 
   process.env.DB_NAME || process.env.MYSQL_DATABASE || process.env.MYSQLDATABASE || 'resell_panel',
   process.env.DB_USER || process.env.MYSQL_USER || process.env.MYSQLUSER || 'root',
   process.env.DB_PASSWORD || process.env.MYSQL_PASSWORD || process.env.MYSQLPASSWORD || '',
