@@ -58,7 +58,7 @@ router.get('/users', async (req, res) => {
             search = '',
             status = '',
             role = '',
-            sortBy = 'createdAt',
+            sortBy = 'created_at',
             sortOrder = 'desc'
         } = req.query;
 
@@ -406,14 +406,14 @@ router.get('/activity', async (req, res) => {
         const recentUsers = await User.findAll({
             order: [['lastLogin', 'DESC']],
             limit: parseInt(limit),
-            attributes: ['username', 'email', 'lastLogin', 'createdAt']
+            attributes: ['username', 'email', 'lastLogin', 'created_at']
         });
 
         const activities = recentUsers.map(user => ({
             type: 'login',
             title: 'User Activity',
             description: `${user.username} last active`,
-            timestamp: user.lastLogin || user.createdAt
+            timestamp: user.lastLogin || user.created_at
         }));
 
         res.json({
@@ -535,7 +535,7 @@ router.get('/keys', async (req, res) => {
         console.log('🔑 Querying ImportedKey model...');
         const { count: total, rows: keys } = await ImportedKey.findAndCountAll({
             where: whereClause,
-            order: [['createdAt', 'DESC']],
+            order: [['created_at', 'DESC']],
             limit: parseInt(limit),
             offset: (page - 1) * limit
         });
