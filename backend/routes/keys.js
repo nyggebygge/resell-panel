@@ -125,11 +125,6 @@ router.post('/generate', authenticateToken, [
 
     // Move keys from unused to generated
     for (const unusedKey of keysToUse) {
-      // Mark as used in unused keys
-      unusedKey.status = 'used';
-      unusedKey.usedBy = req.user.id;
-      unusedKey.usedAt = new Date();
-
       // Create generated key record
       const generatedKey = await GeneratedKey.create({
         userId: req.user.id,
@@ -146,7 +141,31 @@ router.post('/generate', authenticateToken, [
       generatedKeys.push(generatedKey);
     }
 
-    // Save unused keys with updated status
+    // Remove used keys from unused keys arrays
+    switch(type) {
+      case 'day':
+        unusedKeys.dayKeys = unusedKeys.dayKeys.filter(key => 
+          !keysToUse.some(usedKey => usedKey.key === key.key)
+        );
+        break;
+      case 'week':
+        unusedKeys.weekKeys = unusedKeys.weekKeys.filter(key => 
+          !keysToUse.some(usedKey => usedKey.key === key.key)
+        );
+        break;
+      case 'month':
+        unusedKeys.monthKeys = unusedKeys.monthKeys.filter(key => 
+          !keysToUse.some(usedKey => usedKey.key === key.key)
+        );
+        break;
+      case 'lifetime':
+        unusedKeys.lifetimeKeys = unusedKeys.lifetimeKeys.filter(key => 
+          !keysToUse.some(usedKey => usedKey.key === key.key)
+        );
+        break;
+    }
+
+    // Save unused keys with removed keys
     await unusedKeys.save();
 
     // Deduct credits and update user stats
